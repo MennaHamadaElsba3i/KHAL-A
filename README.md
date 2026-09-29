@@ -157,6 +157,8 @@ Validated Response
       ↓
 Product Grid
 
+```
+
 ## ✦ Rendering Strategy
 KHALÉA uses different rendering strategies depending on the purpose of each page.
 
@@ -311,22 +313,3 @@ Designed and developed as a frontend project by Menna Elsbaei.
 
 KHALÉA
 The Essence of Her.
-
-### وعايزة نعمل حركة حلوة في أول الـ README
-
-هيبقى فوق خالص:
-
-```md
-<p align="center">
-  <img src="./public/khalea-readme-banner.png" alt="KHALÉA — The Essence of Her." width="100%" />
-</p>
-
-<h1 align="center">KHALÉA</h1>
-
-<p align="center">
-  <i>The Essence of Her.</i>
-</p>
-
-<p align="center">
-  A cinematic luxury perfume experience built with Next.js.
-</p>
