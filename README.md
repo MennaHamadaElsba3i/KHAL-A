@@ -1,5 +1,5 @@
 <p align="center">
-  <img src=".src/public/images/perfumes/banner.png" alt="KHALÉA — The Essence of Her." width="100%">
+  <img src="./public/images/perfumes/banner.png" alt="KHALÉA — The Essence of Her." width="100%">
 </p>
 # KHALÉA — The Essence of Her.
 
