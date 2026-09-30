@@ -1,0 +1,153 @@
+@import "tailwindcss";
+
+@theme {
+  --font-serif: "Cormorant Garamond", "Didot", "Bodoni MT", "Cinzel", "Playfair Display", Georgia, serif;
+  --font-sans: "Plus Jakarta Sans", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+
+  --color-khalea-cream: #FAF7F2;
+  --color-khalea-cream-light: #FDFBF7;
+  --color-khalea-sand: #F3ECE2;
+  --color-khalea-stone: #E8E1D5;
+  --color-khalea-border: #E5DDD1;
+  --color-khalea-wine: #3E1C27;
+  --color-khalea-wine-dark: #2B121B;
+  --color-khalea-wine-light: #522536;
+  --color-khalea-wine-muted: #6E3246;
+  --color-khalea-charcoal: #1C1917;
+  --color-khalea-muted: #78716C;
+  --color-khalea-gold: #B38F5B;
+  --color-khalea-gold-light: #D4AF37;
+  --color-khalea-gold-dark: #8C6D42;
+  --color-khalea-dark: #121110;
+}
+
+:root {
+  --background: #FAF7F2;
+  --foreground: #1C1917;
+}
+
+body {
+  background-color: #FAF7F2;
+  color: #1C1917;
+  font-family: "Plus Jakarta Sans", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  overflow-x: hidden;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Editorial display font utility */
+.font-display {
+  font-family: "Cormorant Garamond", "Didot", "Bodoni MT", "Cinzel", "Playfair Display", Georgia, serif;
+}
+
+.font-body {
+  font-family: "Plus Jakarta Sans", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+/* Smooth luxury transitions & reveals */
+@keyframes heroFadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes subtleFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes floatSlow {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+.animate-hero-fade {
+  animation: heroFadeUp 0.9s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.animate-subtle-fade {
+  animation: subtleFadeIn 0.65s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.animate-float-slow {
+  animation: floatSlow 7s ease-in-out infinite;
+}
+
+/* Stagger delay utility classes */
+.delay-100 {
+  animation-delay: 100ms;
+}
+.delay-150 {
+  animation-delay: 150ms;
+}
+.delay-200 {
+  animation-delay: 200ms;
+}
+.delay-300 {
+  animation-delay: 300ms;
+}
+.delay-400 {
+  animation-delay: 400ms;
+}
+.delay-500 {
+  animation-delay: 500ms;
+}
+
+/* Shimmer animation for luxury skeleton loading */
+@keyframes luxuryShimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.skeleton-shimmer {
+  background: linear-gradient(
+    90deg,
+    #ECE5DB 25%,
+    #F5EFE6 50%,
+    #ECE5DB 75%
+  );
+  background-size: 200% 100%;
+  animation: luxuryShimmer 2.2s infinite ease-in-out;
+}
+
+/* Smooth crossfade for gallery */
+.fade-enter {
+  opacity: 0;
+  transform: scale(0.99);
+}
+.fade-enter-active {
+  opacity: 1;
+  transform: scale(1);
+  transition: opacity 500ms cubic-bezier(0.16, 1, 0.3, 1), transform 500ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
