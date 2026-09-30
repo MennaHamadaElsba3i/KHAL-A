@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useEffect, useTransition } from "react";
-import { Search, ChevronDown, SlidersHorizontal, X } from "lucide-react";
+import { useState, useEffect, useRef, useTransition } from "react";
+import { Search, ChevronDown, SlidersHorizontal, X, Check } from "lucide-react";
 import { SortOption } from "@/types/product";
+import { cn } from "@/lib/utils";
 
 interface ProductsSearchBarProps {
   searchQuery: string;
@@ -30,6 +31,8 @@ export function ProductsSearchBar({
   activeFilterCount,
 }: ProductsSearchBarProps) {
   const [localSearch, setLocalSearch] = useState(searchQuery);
+  const [sortDropdownOpen, setSortDropdownOpen] = useState(false);
+  const sortDropdownRef = useRef<HTMLDivElement>(null);
   const [, startTransition] = useTransition();
 
   // Keep local input in sync if URL search changes externally (e.g. back/forward navigation)
@@ -50,10 +53,38 @@ export function ProductsSearchBar({
     return () => clearTimeout(timer);
   }, [localSearch, searchQuery, onSearchChange]);
 
+  // Close dropdown on outside click or Escape key
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        sortDropdownRef.current &&
+        !sortDropdownRef.current.contains(event.target as Node)
+      ) {
+        setSortDropdownOpen(false);
+      }
+    };
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setSortDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, []);
+
   const clearSearch = () => {
     setLocalSearch("");
     onSearchChange("");
   };
+
+  const currentSortLabel =
+    SORT_OPTIONS.find((opt) => opt.value === selectedSort)?.label || "Featured";
 
   return (
     <div className="py-6 border-b border-[#E8E1D5]/70 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -81,7 +112,7 @@ export function ProductsSearchBar({
         )}
       </div>
 
-      {/* Right: Mobile Filter Trigger & Sort Dropdown */}
+      {/* Right: Mobile Filter Trigger & Luxury Sort Dropdown */}
       <div className="flex items-center justify-between sm:justify-end gap-6">
         {/* Mobile Filter Sheet Trigger */}
         <button
@@ -98,25 +129,76 @@ export function ProductsSearchBar({
           )}
         </button>
 
-        {/* Sort Select Dropdown */}
-        <div className="flex items-center space-x-2">
-          <span className="text-[10px] sm:text-xs font-medium uppercase tracking-[0.2em] text-[#78716C]">
+        {/* Refined Luxury Sort Dropdown */}
+        <div className="flex items-center space-x-2.5" ref={sortDropdownRef}>
+          <span className="text-[10px] sm:text-xs font-medium uppercase tracking-[0.2em] text-[#78716C] select-none">
             SORT BY
           </span>
+
           <div className="relative">
-            <select
-              value={selectedSort}
-              onChange={(e) => onSortChange(e.target.value as SortOption)}
-              aria-label="Sort fragrances by"
-              className="appearance-none bg-transparent pr-7 pl-1 py-1 text-xs font-medium text-[#1C1917] hover:text-[#3E1C27] tracking-wider border-b border-transparent hover:border-[#D6D0C4] cursor-pointer focus:outline-hidden focus:border-[#1C1917]"
+            <button
+              type="button"
+              onClick={() => setSortDropdownOpen((prev) => !prev)}
+              aria-haspopup="listbox"
+              aria-expanded={sortDropdownOpen}
+              aria-label={`Sort fragrances by. Currently sorted by ${currentSortLabel}`}
+              className={cn(
+                "group inline-flex items-center justify-between gap-3 px-3.5 py-1.5 bg-[#FAF7F2] border text-xs tracking-wider transition-all duration-300 focus:outline-hidden cursor-pointer",
+                sortDropdownOpen
+                  ? "border-[#3E1C27] ring-1 ring-[#3E1C27]/20 shadow-xs"
+                  : "border-[#E5DDD1] hover:border-[#3E1C27]/40 hover:bg-[#F7F2EB]"
+              )}
             >
-              {SORT_OPTIONS.map((opt) => (
-                <option key={opt.value} value={opt.value} className="bg-[#FAF7F2] text-[#1C1917]">
-                  {opt.label}
-                </option>
-              ))}
-            </select>
-            <ChevronDown className="w-3.5 h-3.5 text-[#78716C] absolute right-1 top-1/2 -translate-y-1/2 pointer-events-none" />
+              <span className="font-medium text-[#1C1917] group-hover:text-[#3E1C27] transition-colors">
+                {currentSortLabel}
+              </span>
+              <ChevronDown
+                className={cn(
+                  "w-3.5 h-3.5 text-[#78716C] transition-transform duration-300",
+                  sortDropdownOpen
+                    ? "rotate-180 text-[#3E1C27]"
+                    : "group-hover:text-[#3E1C27]"
+                )}
+              />
+            </button>
+
+            {/* Dropdown Popover */}
+            {sortDropdownOpen && (
+              <div
+                role="listbox"
+                aria-label="Sort options"
+                className="absolute right-0 top-full mt-1.5 z-30 w-52 bg-[#FAF7F2] border border-[#E5DDD1] shadow-lg shadow-black/8 py-1.5 animate-subtle-fade origin-top-right focus:outline-hidden"
+              >
+                {SORT_OPTIONS.map((opt) => {
+                  const isSelected = opt.value === selectedSort;
+                  return (
+                    <button
+                      key={opt.value}
+                      type="button"
+                      role="option"
+                      aria-selected={isSelected}
+                      onClick={() => {
+                        onSortChange(opt.value);
+                        setSortDropdownOpen(false);
+                      }}
+                      className={cn(
+                        "w-full px-3.5 py-2 text-left text-xs tracking-wider transition-colors duration-200 flex items-center justify-between group focus:outline-hidden cursor-pointer",
+                        isSelected
+                          ? "bg-[#F3ECE2] text-[#3E1C27] font-semibold"
+                          : "text-[#57534E] hover:text-[#1C1917] hover:bg-[#F7F2EA]"
+                      )}
+                    >
+                      <span>{opt.label}</span>
+                      {isSelected ? (
+                        <Check className="w-3.5 h-3.5 text-[#3E1C27]" />
+                      ) : (
+                        <span className="w-1.5 h-1.5 rounded-full bg-transparent group-hover:bg-[#C5A880]/50 transition-colors" />
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
+            )}
           </div>
         </div>
       </div>
